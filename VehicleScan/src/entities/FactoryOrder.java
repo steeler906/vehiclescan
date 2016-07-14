@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.*;
             + "i.dltCde IN :dltCde "
             + "ORDER BY i.creationDate DESC "),
 })
-
+@XmlRootElement
 public class FactoryOrder implements Serializable {    
     private static final long serialVersionUID = 1L;
 
