@@ -3,10 +3,17 @@ package entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.*;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Past;
-import javax.xml.bind.annotation.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Daryl Davis
@@ -15,19 +22,13 @@ import javax.xml.bind.annotation.*;
 @Table(name = "FOXREF")
 @NamedQueries({
     @NamedQuery(name = FactoryOrder.FIND_BY_VIN, 
-        query = "SELECT i FROM AbstractFactoryOrder i "
-            + "WHERE "
-            + "i.installerPrefix LIKE :installerPrefix AND "
-            + "i.serialNumber = :serialNumber AND "
-            + "i.vINPrefix >= :vINPrefix AND "
-            + "i.dltCde IN :dltCde "
-            + "ORDER BY i.creationDate DESC "),
+        query = "SELECT i FROM FactoryOrder i WHERE i.installerPrefix LIKE :installerPrefix AND i.serialNumber = :serialNumber AND i.vINPrefix >= :vINPrefix AND i.dltCde IN :dltCde ORDER BY i.creationDate DESC "),
 })
 @XmlRootElement
 public class FactoryOrder implements Serializable {    
     private static final long serialVersionUID = 1L;
 
-    public static final String FIND_BY_VIN = "AbstractFactoryOrder.findByVIN";
+    public static final String FIND_BY_VIN = "FactoryOrder.findByVIN";
 
     public FactoryOrder() {
         super(); //temp for placement
@@ -36,19 +37,19 @@ public class FactoryOrder implements Serializable {
 //- Class Elements for JAXB and JPA
 
     @Id
-    @Column(name = "FOFO#", length = 10, nullable = false)
+    @Column(name = "FOFO#")
     protected String factoryOrderNum = " ";
 
-    @Column(name = "FODCOD", length = 1, nullable = false)
+    @Column(name = "FODCOD")
     protected String dltCde = " ";
 
-    @Column(name = "FOENDCST", precision = 5, scale = 0, nullable = false, insertable=false, updatable=false)
+    @Column(name = "FOENDCST", insertable=false, updatable=false)
     protected BigDecimal endCustNum = BigDecimal.ZERO;
 
-    @Column(name = "FOSO#", precision = 6, scale = 0, nullable = false, insertable=false, updatable=false)
+    @Column(name = "FOSO#", insertable=false, updatable=false)
     protected BigDecimal salesOrderNum = BigDecimal.ZERO;
 
-    @Column(name = "FOCUS#", precision = 5, scale = 0, nullable = false, insertable=false, updatable=false)
+    @Column(name = "FOCUS#", insertable=false, updatable=false)
     protected BigDecimal customerNumber = BigDecimal.ZERO;
 
     @Column(name = "FOSERI", length = 8, nullable = false)
@@ -57,31 +58,38 @@ public class FactoryOrder implements Serializable {
     @Column(name = "FOVINPFX", length = 9, nullable = false)
     protected String vINPrefix = " ";
 
-    @Column(name = "FODTPR", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTPR")
+    @Temporal(TemporalType.DATE)
     protected Date partialInstallDate = null;
 
-    @Column(name = "FODTRC", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTRC")
+    @Temporal(TemporalType.DATE)
     protected Date receivedDate = null;
 
-    @Column(name = "FODTIN", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTIN")
+    @Temporal(TemporalType.DATE)
     protected Date installedDate = null;
 
-    @Column(name = "FODTSH", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTSH")
+    @Temporal(TemporalType.DATE)
     protected Date shippedDate = null;
 
-    @Column(name = "FODTEM", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTEM")
+    @Temporal(TemporalType.DATE)
     protected Date estMfgDate = null;
 
-    @Column(name = "FODTEI", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTEI")
+    @Temporal(TemporalType.DATE)
     protected Date estInstallDate = null;
 
-    @Column(name = "FOIPFX", length = 3, nullable = false)
-    protected String installerPrefix = " ";
+    @Column(name = "FOIPFX")
+    protected String installerPrefix = "";
 
-    @Column(name = "FOCMT1", length = 20, nullable = false)
-    private String lotLocation = " ";
+    @Column(name = "FOCMT1")
+    private String lotLocation = "";
 
-    @Column(name = "FODTCRT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "FODTCRT")
+    @Temporal(TemporalType.DATE)
     protected Date creationDate = null;
        
     

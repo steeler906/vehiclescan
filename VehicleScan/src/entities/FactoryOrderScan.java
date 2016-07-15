@@ -32,75 +32,81 @@ public class FactoryOrderScan implements Serializable {
 //- Class Elements for JAXB and JPA
 
     @Id
-    @Column(name = "TRCTLN", precision = 7, scale = 1, nullable = false)
+    @Column(name = "TRCTLN")
     private BigDecimal id = BigDecimal.ZERO;
 
     @Size(max=3)
-    @Column(name = "TRLOC", length = 3, nullable = false)
-    private String installerPrefix = " ";
+    @Column(name = "TRLOC")
+    private String installerPrefix = "";
 
-    @Column(name = "TRUPLDT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "TRUPLDT")
+    @Temporal(TemporalType.DATE)
     private Date uploadDate = null;
 
-    @Column(name = "TRPSTDT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "TRPSTDT")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date postedDate = null;
 
     @Size(max=10)
-    @Column(name = "TRASFO", length = 10, nullable = false)
-    private String factoryOrder = " ";
+    @Column(name = "TRASFO")
+    private String factoryOrder = "";
 
-    @Column(name = "TRASSO", precision = 6, scale = 0, nullable = false)
+    @Column(name = "TRASSO")
     private BigDecimal tRASSO = BigDecimal.ZERO;
 
     @Size(max=1)
-    @Column(name = "TRERR", length = 1, nullable = false)
-    private String validationError = " ";
+    @Column(name = "TRERR", length = 1)
+    private String validationError = "";
 
     @Size(max=1)
-    @Column(name = "TRRVW", length = 1, nullable = false)
-    private String reviewed = " ";
+    @Column(name = "TRRVW", length = 1)
+    private String reviewed = "";
 
     @Size(max=3)
     @Column(name = "TRCODE", length = 3, nullable = false)
-    private String scanCode = " ";
+    private String scanCode = "";
 
     @Size(max=5)
     @Column(name = "TRUSER", length = 5, nullable = false)
-    private String userInitials = " ";
+    private String userInitials = "";
 
-    @Column(name = "TRSCANDT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "TRSCANDT")
+    @Temporal(TemporalType.DATE)
     private Date scanDate = null;
 
     @Size(max=20)
     @Column(name = "TRVIN", length = 20, nullable = false)
-    private String vin = " ";
+    private String vin = "";
 
-    @Column(name = "TRFO", length = 10, nullable = false)
-    private String tRFO = " ";
+    @Column(name = "TRFO")
+    private String tRFO = "";
 
-    @Column(name = "TRTRANDT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "TRTRANDT")
+    @Temporal(TemporalType.DATE)
     private Date transactionDate = null;
 
     @Size(max=15)
     @Column(name = "TRVEHLOC", length = 15, nullable = false)
-    private String vehicleLocation = " ";
+    private String vehicleLocation = "";
 
     @Size(max=1)
-    @Column(name = "TRVEHTYP", length = 1, nullable = false)
-    private String vehicleType = " ";
+    @Column(name = "TRVEHTYP", length = 1)
+    private String vehicleType = "";
 
     @Size(max=5)
-    @Column(name = "TRDMG", length = 5, nullable = false)
-    private String damageCode = " ";
+    @Column(name = "TRDMG", length = 5)
+    private String damageCode = "";
 
     @Size(max=1)
-    @Column(name = "TRPDI", length = 1, nullable = false)
-    private String preDeliveryInspection = " ";
+    @Column(name = "TRPDI", length = 1)
+    private String preDeliveryInspection = "";
 
-    @Column(name = "TRESTDT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "TRESTDT")
+    @Temporal(TemporalType.DATE)
     private Date estimatedInstallDate = null;
 
-    @Column(name = "TRMATDT", precision = 8, scale = 0, nullable = false)
+    @Column(name = "TRMATDT")
+    @Temporal(TemporalType.DATE)
     private Date materialRequestDate = null;
 
     //Transient Fields not going to the database XML Only
