@@ -57,9 +57,7 @@ public class FactoryOrderResource {
     @Path("vin/{vin}")
     @Produces({"application/xml", "application/json"})
     public List<FactoryOrder> findByVIN(@PathParam("vin") String vin, @QueryParam("instprfx") @DefaultValue("") String installerPrefix) {
-    	List<FactoryOrder> test = new ArrayList<>();
-    	test.add(new FactoryOrder(vin));
-    	return test;
+    	return null;
     }
     
     @GET

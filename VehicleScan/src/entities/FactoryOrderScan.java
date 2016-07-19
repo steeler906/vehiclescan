@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 
 @Entity
-@Table(name = "FOSCAN")//, schema = "OEF")
+@Table(name = "tblFactoryOrderScan")//, schema = "OEF")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = FactoryOrderScan.FIND_ALL, query = "SELECT s FROM FactoryOrderScan s"),
@@ -32,85 +32,85 @@ public class FactoryOrderScan implements Serializable {
 //- Class Elements for JAXB and JPA
 
     @Id
-    @Column(name = "TRCTLN")
+//    @Column(name = "TRCTLN")
     private BigDecimal id = BigDecimal.ZERO;
 
     @Size(max=3)
-    @Column(name = "TRLOC")
+//    @Column(name = "TRLOC")
     private String installerPrefix = "";
 
-    @Column(name = "TRUPLDT")
+//    @Column(name = "TRUPLDT")
     @Temporal(TemporalType.DATE)
     private Date uploadDate = null;
 
-    @Column(name = "TRPSTDT")
+//    @Column(name = "TRPSTDT")
     @Temporal(TemporalType.TIMESTAMP)
     private Date postedDate = null;
 
     @Size(max=10)
-    @Column(name = "TRASFO")
+//    @Column(name = "TRASFO")
     private String factoryOrder = "";
 
-    @Column(name = "TRASSO")
+//    @Column(name = "TRASSO")
     private BigDecimal tRASSO = BigDecimal.ZERO;
 
     @Size(max=1)
-    @Column(name = "TRERR", length = 1)
+//    @Column(name = "TRERR", length = 1)
     private String validationError = "";
 
     @Size(max=1)
-    @Column(name = "TRRVW", length = 1)
+//    @Column(name = "TRRVW", length = 1)
     private String reviewed = "";
 
     @Size(max=3)
-    @Column(name = "TRCODE", length = 3, nullable = false)
+//    @Column(name = "TRCODE", length = 3, nullable = false)
     private String scanCode = "";
 
     @Size(max=5)
-    @Column(name = "TRUSER", length = 5, nullable = false)
+//    @Column(name = "TRUSER", length = 5, nullable = false)
     private String userInitials = "";
 
-    @Column(name = "TRSCANDT")
+//    @Column(name = "TRSCANDT")
     @Temporal(TemporalType.DATE)
     private Date scanDate = null;
 
     @Size(max=20)
-    @Column(name = "TRVIN", length = 20, nullable = false)
+//    @Column(name = "TRVIN", length = 20, nullable = false)
     private String vin = "";
 
-    @Column(name = "TRFO")
-    private String tRFO = "";
+//    @Column(name = "TRFO")
+//    private String tRFO = "";
 
-    @Column(name = "TRTRANDT")
+//    @Column(name = "TRTRANDT")
     @Temporal(TemporalType.DATE)
     private Date transactionDate = null;
 
     @Size(max=15)
-    @Column(name = "TRVEHLOC", length = 15, nullable = false)
+//    @Column(name = "TRVEHLOC", length = 15, nullable = false)
     private String vehicleLocation = "";
 
     @Size(max=1)
-    @Column(name = "TRVEHTYP", length = 1)
+//    @Column(name = "TRVEHTYP", length = 1)
     private String vehicleType = "";
 
     @Size(max=5)
-    @Column(name = "TRDMG", length = 5)
+//    @Column(name = "TRDMG", length = 5)
     private String damageCode = "";
 
     @Size(max=1)
-    @Column(name = "TRPDI", length = 1)
+//    @Column(name = "TRPDI", length = 1)
     private String preDeliveryInspection = "";
 
-    @Column(name = "TRESTDT")
+//    @Column(name = "TRESTDT")
     @Temporal(TemporalType.DATE)
     private Date estimatedInstallDate = null;
 
-    @Column(name = "TRMATDT")
+//    @Column(name = "TRMATDT")
     @Temporal(TemporalType.DATE)
     private Date materialRequestDate = null;
 
     //Transient Fields not going to the database XML Only
-    @Transient
+//    @Transient
     private String message = "";
     
     public FactoryOrderScan(BigDecimal id) {

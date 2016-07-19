@@ -8,7 +8,7 @@
     <properties>
       <!-- log sqls executed in server.log -->
       <property name="eclipselink.logging.level" value="FINE"/>
-      <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/>
+<!--       <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.DefaultSessionLog"/> -->
       <!-- Instruct EclipseLink to not log execeptions it throws. Lets the application decide about it-->
       <property name="eclipselink.logging.exceptions" value="false"/>
     </properties>
