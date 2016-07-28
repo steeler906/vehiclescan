@@ -50,6 +50,8 @@ public class FactoryOrderScanResource {
     	BigDecimal nextId = FactoryOrderScan.getNextID(em);
     	entity.setId(nextId);
     	
+    	//Test Chuck
+    	
         //DEBUG TODO: REMOVE
         Logger.getLogger("FactoryOrderScanResource").info("Submitted scan in XML: " + printXMLString(entity));
     	
