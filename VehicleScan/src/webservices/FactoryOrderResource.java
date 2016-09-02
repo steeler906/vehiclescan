@@ -12,6 +12,7 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -57,7 +58,15 @@ public class FactoryOrderResource {
     @Path("vin/{vin}")
     @Produces({"application/xml", "application/json"})
     public List<FactoryOrder> findByVIN(@PathParam("vin") String vin, @QueryParam("instprfx") @DefaultValue("") String installerPrefix) {
-    	return null;
+    	List<FactoryOrder> orders = null;
+    	
+    	TypedQuery<FactoryOrder> query = em.createNamedQuery(FactoryOrder.FIND_BY_VIN, FactoryOrder.class);
+    	query.setParameter("vin", vin);
+    	query.setParameter("installerPrefix", "%"+installerPrefix+"%");
+    	
+    	orders = query.getResultList();
+    	
+    	return orders;
     }
     
     @GET

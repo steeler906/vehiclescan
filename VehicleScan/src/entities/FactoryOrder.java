@@ -12,7 +12,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -20,10 +22,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  ***
  */
 @Entity
-@Table(name = "FOXREF")
+@Table(name = "tblCVI_VIN_Master")
 @NamedQueries({
     @NamedQuery(name = FactoryOrder.FIND_BY_VIN, 
-        query = "SELECT i FROM FactoryOrder i WHERE i.installerPrefix LIKE :installerPrefix AND i.serialNumber = :serialNumber AND i.vINPrefix >= :vINPrefix AND i.dltCde IN :dltCde ORDER BY i.creationDate DESC "),
+        query = "SELECT i FROM FactoryOrder i WHERE (i.installerPrefix LIKE :installerPrefix OR i.installerPrefix is null) AND i.vin = :vin ORDER BY i.creationDate DESC "),
 })
 @XmlRootElement
 public class FactoryOrder implements Serializable {    
@@ -38,60 +40,69 @@ public class FactoryOrder implements Serializable {
 //- Class Elements for JAXB and JPA
 
     @Id
-    @Column(name = "FOFO#")
-    protected String factoryOrderNum = " ";
+    @Column(name = "FO_Number")
+    protected String factoryOrderNum = "";
 
-    @Column(name = "FODCOD")
-    protected String dltCde = " ";
+//    @Column(name = "FODCOD")
+//    protected String dltCde = " ";
 
-    @Column(name = "FOENDCST", insertable=false, updatable=false)
-    protected BigDecimal endCustNum = BigDecimal.ZERO;
+//    @Column(name = "Customer", insertable=false, updatable=false)
+//    protected String endCustNum = BigDecimal.ZERO;
 
-    @Column(name = "FOSO#", insertable=false, updatable=false)
+    @Column(name = "OrderNumber", insertable=false, updatable=false)
     protected BigDecimal salesOrderNum = BigDecimal.ZERO;
 
-    @Column(name = "FOCUS#", insertable=false, updatable=false)
-    protected BigDecimal customerNumber = BigDecimal.ZERO;
+//    @Column(name = "FOCUS#", insertable=false, updatable=false)
+//    protected BigDecimal customerNumber = BigDecimal.ZERO;
 
-    @Column(name = "FOSERI", length = 8, nullable = false)
+//    @Column(name = "FOSERI", length = 8, nullable = false)
+    @Transient
     protected String serialNumber = " ";
 
-    @Column(name = "FOVINPFX", length = 9, nullable = false)
+//    @Column(name = "FOVINPFX", length = 9, nullable = false)
+    @Transient
     protected String vINPrefix = " ";
+    
+    @Column(name = "VIN")
+    protected String vin = "";
 
-    @Column(name = "FODTPR")
-    @Temporal(TemporalType.DATE)
-    protected Date partialInstallDate = null;
+//    @Column(name = "FODTPR")
+//    @Temporal(TemporalType.DATE)
+//    protected Date partialInstallDate = null;
 
-    @Column(name = "FODTRC")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "dtmVehicleReceived")
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date receivedDate = null;
 
-    @Column(name = "FODTIN")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "dtmWorkCompleted")
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date installedDate = null;
 
-    @Column(name = "FODTSH")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "dtmExitCompound")
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date shippedDate = null;
 
-    @Column(name = "FODTEM")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "dtmTPW")
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date estMfgDate = null;
 
-    @Column(name = "FODTEI")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "dtmScheduledForUpfitOnDate")
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date estInstallDate = null;
 
-    @Column(name = "FOIPFX")
+    @Column(name = "CompoundCode")
     protected String installerPrefix = "";
 
-    @Column(name = "FOCMT1")
-    private String lotLocation = "";
+    @Column(name = "BayLocation")
+    protected String lotLocation = "";
 
-    @Column(name = "FODTCRT")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "dtmCreated")
+    @Temporal(TemporalType.TIMESTAMP)
     protected Date creationDate = null;
+    
+    @Column(name = "dtmRecordClosed")
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date recordClosedDate = null;
        
     
     public FactoryOrder(String factoryOrderNum) {
@@ -107,21 +118,21 @@ public class FactoryOrder implements Serializable {
         this.factoryOrderNum = factoryOrderNum;
     }
 
-    public String getDltCde() {
-        return dltCde;
-    }
-
-    public void setDltCde(String dltCde) {
-        this.dltCde = dltCde;
-    }
-    
-    public BigDecimal getEndCustNum() {
-		return endCustNum;
-	}
-
-	public void setEndCustNum(BigDecimal endCustNum) {
-		this.endCustNum = endCustNum;
-	}
+//    public String getDltCde() {
+//        return dltCde;
+//    }
+//
+//    public void setDltCde(String dltCde) {
+//        this.dltCde = dltCde;
+//    }
+   
+//    public BigDecimal getEndCustNum() {
+//		return endCustNum;
+//	}
+//
+//	public void setEndCustNum(BigDecimal endCustNum) {
+//		this.endCustNum = endCustNum;
+//	}
 
 	public BigDecimal getSalesOrderNum() {
 		return salesOrderNum;
@@ -131,37 +142,56 @@ public class FactoryOrder implements Serializable {
 		this.salesOrderNum = salesOrderNum;
 	}
 
-	public BigDecimal getCustomerNumber() {
-		return customerNumber;
-	}
-
-	public void setCustomerNumber(BigDecimal customerNumber) {
-		this.customerNumber = customerNumber;
-	}
+//	public BigDecimal getCustomerNumber() {
+//		return customerNumber;
+//	}
+//
+//	public void setCustomerNumber(BigDecimal customerNumber) {
+//		this.customerNumber = customerNumber;
+//	}
 
 	public String getSerialNumber() {
-		return serialNumber;
+		if (vin != null && vin.length() == 17) {
+			return vin.substring(9, 17);
+//			return serialNumber;
+		} else if (vin != null && vin.length() > 9) {
+			return vin.substring(9, vin.length());
+		} else {
+			return ""; //12345678912345678
+		}
 	}
 
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
+		this.vin = getvINPrefix() + serialNumber;
 	}
 
 	public String getvINPrefix() {
-		return vINPrefix;
+		if (vin != null && vin.length() > 9) {
+			return vin.substring(0, 9);
+// dnw cu			return vin.substring(1, 8);
+		} else {
+			return vin;
+		}
+//		return vINPrefix;
+// 99cu99
 	}
-
+	
+	@XmlElement(name="vinprefix")
 	public void setvINPrefix(String vINPrefix) {
 		this.vINPrefix = vINPrefix;
+// dnw cu		this.vINPrefix = getvINPrefix();
+		this.vin = vINPrefix + getSerialNumber();
+// dnw cu		this.vin = getvINPrefix() + getSerialNumber();
 	}
 
-	public Date getPartialInstallDate() {
-		return partialInstallDate;
-	}
-
-	public void setPartialInstallDate(Date partialInstallDate) {
-		this.partialInstallDate = partialInstallDate;
-	}
+//	public Date getPartialInstallDate() {
+//		return partialInstallDate;
+//	}
+//
+//	public void setPartialInstallDate(Date partialInstallDate) {
+//		this.partialInstallDate = partialInstallDate;
+//	}
 
 	public Date getReceivedDate() {
 		return receivedDate;
@@ -227,42 +257,12 @@ public class FactoryOrder implements Serializable {
 		this.creationDate = creationDate;
 	}
 
-    @Override
-	public String toString() {
-		return "AbstractFactoryOrder [factoryOrderNum=" + factoryOrderNum + ", dltCde=" + dltCde + ", endCustNum="
-				+ endCustNum + ", salesOrderNum=" + salesOrderNum + ", customerNumber=" + customerNumber
-				+ ", serialNumber=" + serialNumber + ", vINPrefix=" + vINPrefix + ", partialInstallDate="
-				+ partialInstallDate + ", receivedDate=" + receivedDate + ", installedDate=" + installedDate
-				+ ", shippedDate=" + shippedDate + ", estMfgDate=" + estMfgDate + ", estInstallDate=" + estInstallDate
-				+ ", installerPrefix=" + installerPrefix + ", lotLocation=" + lotLocation + ", creationDate="
-				+ creationDate + "]";
+	public Date getRecordClosedDate() {
+		return recordClosedDate;
 	}
 
-	@Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + (this.factoryOrderNum != null ? this.factoryOrderNum.hashCode() : 0);
-        hash = 67 * hash + (this.creationDate != null ? this.creationDate.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FactoryOrder other = (FactoryOrder) obj;
-        if ((this.factoryOrderNum == null) ? (other.factoryOrderNum != null) : !this.factoryOrderNum.equals(other.factoryOrderNum)) {
-            return false;
-        }
-        if (this.creationDate != other.creationDate && (this.creationDate == null || !this.creationDate.equals(other.creationDate))) {
-            return false;
-        }
-        return true;
-    }
-    
+	public void setRecordClosedDate(Date recordClosedDate) {
+		this.recordClosedDate = recordClosedDate;
+	}
     
 }

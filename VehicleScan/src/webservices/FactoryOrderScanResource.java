@@ -3,13 +3,17 @@ package webservices;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -20,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import entities.FactoryOrder;
 import entities.FactoryOrderScan;
 
 /*************************************************************
@@ -60,12 +65,35 @@ public class FactoryOrderScanResource {
     	entity.setUploadDate(new Date());
     	entity.setPostedDate(new Date());
     	
+    	boolean inError = false;
+    	String message = "";
+    	
     	//do some code to validate the VIN or any other data
     	//***business rules***
     	// example, test that Received scan isn't an already received vehicle. 
+    	if (entity.getScanCode().trim().equals("ST")) {
+    		//Receive Scan
+    		String vin = entity.getVin();
+    		TypedQuery<FactoryOrder> q = em.createQuery("select f from FactoryOrder f where f.vin = :vin and f.recordClosedDate is null", FactoryOrder.class);
+    		q.setParameter("vin", vin);
+    		
+    		try {
+				FactoryOrder f = q.getSingleResult();
+				
+				if (f.getReceivedDate() != null) {
+					message = "VIN is already received.";
+					inError = true;
+				} else {
+					f.setReceivedDate(entity.getScanDate());
+				}
+			} catch (NoResultException|NonUniqueResultException ex) {
+				message = ex.getMessage();
+				inError = true;
+			}
+    	}
     	
-    	entity.setMessage("Scans not accepted yet");
-    	entity.setValidationError("Y");
+    	entity.setMessage(message);
+    	entity.setValidationError((inError)?"Y":"");
     	
     	//update database with changes
     	em.merge(entity);
@@ -73,6 +101,7 @@ public class FactoryOrderScanResource {
     	//return updated scan back to scanner
     	return entity;
     }
+    
     
     @GET
     @Path("{id}")
