@@ -50,56 +50,115 @@ public class FactoryOrderScanResource {
     @POST
     @Consumes({"application/xml", "application/json"})
     @Produces({"application/xml", "application/json"})
-    public FactoryOrderScan createNew(FactoryOrderScan entity) {
+    public FactoryOrderScan createNew(FactoryOrderScan scan) {
     	//write transaction immediately to the database for the log
     	BigDecimal nextId = FactoryOrderScan.getNextID(em);
-    	entity.setId(nextId);
+    	scan.setId(nextId);
     	
     	//Test Chuck
     	
         //DEBUG TODO: REMOVE
-        Logger.getLogger("FactoryOrderScanResource").info("Submitted scan in XML: " + printXMLString(entity));
+        Logger.getLogger("FactoryOrderScanResource").info("Submitted scan in XML: " + printXMLString(scan));
     	
-    	em.persist(entity);
+    	em.persist(scan);
     	
-    	entity.setUploadDate(new Date());
-    	entity.setPostedDate(new Date());
+    	scan.setUploadDate(new Date());
+    	scan.setPostedDate(new Date());
     	
     	boolean inError = false;
     	String message = "";
     	
     	//do some code to validate the VIN or any other data
     	//***business rules***
+    	//Find Record by VIN
+		String vin = scan.getVin();
+		TypedQuery<FactoryOrder> q = em.createQuery("select f from FactoryOrder f where f.vin = :vin and f.recordClosedDate is null", FactoryOrder.class);
+		q.setParameter("vin", vin);
+		//Get the FactoryOrder Object
+		FactoryOrder f = null;
+		try {
+			f = q.getSingleResult();
+		} catch (NoResultException nre) {
+			message = "VIN not found";
+			inError = true;
+		} catch (NonUniqueResultException nure) {
+			message = "Multiple VINs found, please review.";
+			inError = true;
+		}
+		if (f == null) { //safety code for VIN
+			message = "Problem getting VIN, please call IS.";
+			inError = true;
+		}
+		
     	// example, test that Received scan isn't an already received vehicle. 
-    	if (entity.getScanCode().trim().equals("ST")) {
-    		//Receive Scan
-    		String vin = entity.getVin();
-    		TypedQuery<FactoryOrder> q = em.createQuery("select f from FactoryOrder f where f.vin = :vin and f.recordClosedDate is null", FactoryOrder.class);
-    		q.setParameter("vin", vin);
-    		
-    		try {
-				FactoryOrder f = q.getSingleResult();
-				
+    	//
+		// Processed 'received' scans
+		if (inError == false) {
+			if (scan.getScanCode().trim().equals("ST")) {
+				// Receive Scan
 				if (f.getReceivedDate() != null) {
 					message = "VIN is already received.";
 					inError = true;
 				} else {
-					f.setReceivedDate(entity.getScanDate());
+					f.setReceivedDate(scan.getScanDate());
 				}
-			} catch (NoResultException|NonUniqueResultException ex) {
-				message = ex.getMessage();
+			} else if (scan.getScanCode().trim().equals("LOC")) {
+				//Location Scan
+				String loc = scan.getVehicleLocation();
+				if (loc != null && !loc.isEmpty()) {
+					f.setLotLocation(scan.getVehicleLocation());
+				} else {
+					message = "Scan must have a location";
+					inError = true;
+				}
+			} else if (scan.getScanCode().trim().equals("IN")) {
+				//Install Scan
+				if (f.getReceivedDate() == null) {
+					message = "VIN must first be received";
+					inError = true;
+				} else if (f.getInstalledDate() != null) {
+					message = "VIN already installed";
+					inError = true;
+				} else if (f.getSalesOrderNum() == null || f.getSalesOrderNum().equals(BigDecimal.ZERO)) {
+					message = "Installed VIN must have an Order";
+					inError = true;
+				}
+				else {
+					f.setInstalledDate(scan.getScanDate());
+				}
+			} else if (scan.getScanCode().trim().equals("SHP")) {
+				//Shipped Scan
+				if (f.getReceivedDate() == null) {
+					message = "VIN must first be received";
+					inError = true;
+				} else if (f.getInstalledDate() == null) {
+					message = "VIN must be installed";
+					inError = true;
+				} else if (f.getShippedDate() != null) {
+					message = "VIN already shipped";
+					inError = true;
+				} else if (f.getSalesOrderNum() == null || f.getSalesOrderNum().equals(BigDecimal.ZERO)) {
+					message = "Shipped VIN must have an Order";
+					inError = true;
+				}
+				else {
+					f.setShippedDate(scan.getScanDate());
+				}
+			}
+			else {
+				message = "Scan type not supported: " + scan.getScanCode();
 				inError = true;
 			}
-    	}
+		}
     	
-    	entity.setMessage(message);
-    	entity.setValidationError((inError)?"Y":"");
+    	scan.setMessage(message);
+    	scan.setValidationError((inError)?"Y":"");
     	
     	//update database with changes
-    	em.merge(entity);
+    	em.merge(scan);
     	
     	//return updated scan back to scanner
-    	return entity;
+    	return scan;
     }
     
     
