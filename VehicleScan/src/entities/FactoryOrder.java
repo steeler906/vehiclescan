@@ -39,7 +39,7 @@ public class FactoryOrder implements Serializable {
 
 //- Class Elements for JAXB and JPA
 
-    @Id
+//    @Id
     @Column(name = "FO_Number")
     protected String factoryOrderNum = "";
 
@@ -63,6 +63,7 @@ public class FactoryOrder implements Serializable {
     @Transient
     protected String vINPrefix = " ";
     
+    @Id
     @Column(name = "VIN")
     protected String vin = "";
 

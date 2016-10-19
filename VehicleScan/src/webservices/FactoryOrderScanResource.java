@@ -55,7 +55,16 @@ public class FactoryOrderScanResource {
     	BigDecimal nextId = FactoryOrderScan.getNextID(em);
     	scan.setId(nextId);
     	
-    	//Test Chuck
+    	//Validations
+		String vin = scan.getVin();
+		if (vin.length()>17){
+			scan.setVin(vin.substring(0,  17));
+		}
+		String fo = scan.getFactoryOrder();
+		if (fo.length()>10){
+			scan.setFactoryOrder(fo.substring(0,  10));
+		}
+		
     	
         //DEBUG TODO: REMOVE
         Logger.getLogger("FactoryOrderScanResource").info("Submitted scan in XML: " + printXMLString(scan));
@@ -71,7 +80,7 @@ public class FactoryOrderScanResource {
     	//do some code to validate the VIN or any other data
     	//***business rules***
     	//Find Record by VIN
-		String vin = scan.getVin();
+    	vin = scan.getVin(); //make sure we have newest vin. 
 		TypedQuery<FactoryOrder> q = em.createQuery("select f from FactoryOrder f where f.vin = :vin and f.recordClosedDate is null", FactoryOrder.class);
 		q.setParameter("vin", vin);
 		//Get the FactoryOrder Object
@@ -100,6 +109,7 @@ public class FactoryOrderScanResource {
 					message = "VIN is already received.";
 					inError = true;
 				} else {
+					//uPDATE THE Sql sERVER  cvi vin mASTER TABLE
 					f.setReceivedDate(scan.getScanDate());
 				}
 			} else if (scan.getScanCode().trim().equals("LOC")) {

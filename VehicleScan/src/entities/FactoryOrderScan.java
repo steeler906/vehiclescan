@@ -40,7 +40,7 @@ public class FactoryOrderScan implements Serializable {
     private String installerPrefix = "";
 
 //    @Column(name = "TRUPLDT")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate = null;
 
 //    @Column(name = "TRPSTDT")
@@ -71,7 +71,7 @@ public class FactoryOrderScan implements Serializable {
     private String userInitials = "";
 
 //    @Column(name = "TRSCANDT")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date scanDate = null;
 
     @Size(max=20)
@@ -82,7 +82,7 @@ public class FactoryOrderScan implements Serializable {
 //    private String tRFO = "";
 
 //    @Column(name = "TRTRANDT")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date transactionDate = null;
 
     @Size(max=15)
